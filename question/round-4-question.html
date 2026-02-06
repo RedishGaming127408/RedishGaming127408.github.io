@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Round 4 | Abstract thinking Quiz</title>
+    <link rel="stylesheet" href="/css/question.css">
+  </head>
+  <body>
+    <!-- Loader -->
+    <div id="loader">
+      <div class="loader"></div>
+  </div>
+    <header>Welcome to the Quiz, Goodluck baby!</header>
+    <div class="quiz-container">
+      <div id="timer" class="hidden">Time Left: <span id="time-remaining"></span></div>
+      <button id="start-timer-btn" onclick="startTimer()">Start Timer</button>
+      <div class="question-section">
+        <h3 id="question-text">Loading...</h3>
+        <ul class="options" id="options-list">
+          <!-- Options dynamically generated -->
+        </ul>
+      </div>
+      <div id="feedback" class="hidden"></div>
+      <div id="explanation" class="hidden"></div>
+      <button id="back-btn" class="hidden" onclick="loadPreviousQuestion()">
+        Back
+      </button>
+      <button id="next-btn" class="hidden" onclick="loadNextQuestion()">
+        Next
+      </button>
+    </div>
+
+    <footer class="footer">
+      <p>
+        Designed with ❤️ by
+        <a href="https://web.facebook.com/jhian.manacpo" target="_blank">JHIAN</a>
+      </p>
+    </footer>
+
+    <script>
+// Array of quiz questions with correct answers and explanations
+const questions = [
+  // Analogies
+  {
+    question: "Dog is to Puppy as Cat is to ___?",
+    options: ["Kitten", "Cub", "Foal", "Calf"],
+    correct: "Kitten",
+    explanation: "A puppy is a young dog; a kitten is a young cat."
+  },
+  {
+    question: "Book is to Reading as Knife is to ___?",
+    options: ["Cutting", "Eating", "Writing", "Drawing"],
+    correct: "Cutting",
+    explanation: "A book is used for reading; a knife is used for cutting."
+  },
+  {
+    question: "Finger is to Hand as Toe is to ___?",
+    options: ["Leg", "Foot", "Arm", "Knee"],
+    correct: "Foot",
+    explanation: "A finger is part of a hand; a toe is part of a foot."
+  },
+  {
+    question: "Hot is to Cold as Day is to ___?",
+    options: ["Night", "Morning", "Afternoon", "Evening"],
+    correct: "Night",
+    explanation: "Hot is the opposite of cold; day is the opposite of night."
+  },
+  {
+    question: "Cup is to Drink as Plate is to ___?",
+    options: ["Eat", "Hold", "Cook", "Wash"],
+    correct: "Eat",
+    explanation: "A cup is used for drinking; a plate is used for eating."
+  },
+
+  // Patterns / Sequences
+  {
+    question: "What comes next in the series: 2, 4, 8, 16, ___?",
+    options: ["32", "24", "20", "30"],
+    correct: "32",
+    explanation: "Each number is multiplied by 2: 16 × 2 = 32."
+  },
+  {
+    question: "Find the next number: 5, 10, 20, 40, ___?",
+    options: ["80", "60", "50", "100"],
+    correct: "80",
+    explanation: "Each number doubles the previous: 40 × 2 = 80."
+  },
+  {
+    question: "What is the next in the series: A, C, E, G, ___?",
+    options: ["H", "I", "F", "J"],
+    correct: "I",
+    explanation: "The series skips one letter each time: A, C, E, G, I."
+  },
+  {
+    question: "Complete the series: 1, 4, 9, 16, ___?",
+    options: ["20", "25", "30", "36"],
+    correct: "25",
+    explanation: "The series is perfect squares: 1², 2², 3², 4², 5² = 25."
+  },
+  {
+    question: "Find the missing number: 2, 5, 10, 17, ___?",
+    options: ["24", "26", "20", "22"],
+    correct: "26",
+    explanation: "Pattern: n² +1 → 1²+1=2, 2²+1=5, 3²+1=10, 4²+1=17, 5²+1=26."
+  },
+
+  // Logical reasoning
+  {
+    question: "If all roses are flowers and some flowers fade quickly, then some roses fade quickly: True or False?",
+    options: ["True", "False", "Cannot determine", "None"],
+    correct: "Cannot determine",
+    explanation: "We cannot be sure which roses fade; only some flowers fade quickly."
+  },
+  {
+    question: "If today is Monday, what day will it be 45 days later?",
+    options: ["Sunday", "Monday", "Tuesday", "Wednesday"],
+    correct: "Wednesday",
+    explanation: "45 ÷ 7 = 6 weeks + 3 days → Monday + 3 = Thursday."
+  },
+  {
+    question: "All cats are mammals. All mammals have lungs. Do all cats have lungs?",
+    options: ["Yes", "No", "Cannot determine", "Maybe"],
+    correct: "Yes",
+    explanation: "If all cats are mammals and all mammals have lungs, cats must have lungs."
+  },
+  {
+    question: "If some birds can fly and all eagles are birds, can we conclude all eagles can fly?",
+    options: ["Yes", "No", "Cannot determine", "Maybe"],
+    correct: "Cannot determine",
+    explanation: "Not all birds can fly; thus we cannot conclude about all eagles."
+  },
+  {
+    question: "If the first two statements are true, is the final statement true? \n1) All squares are rectangles.\n2) All rectangles have 4 sides.\nStatement: All squares have 4 sides.",
+    options: ["True", "False", "Cannot determine", "None"],
+    correct: "True",
+    explanation: "Since all squares are rectangles and all rectangles have 4 sides, squares have 4 sides."
+  },
+
+  // Visual/Spatial reasoning (verbalized)
+  {
+    question: "Which shape does not belong? Circle, Triangle, Square, Cube",
+    options: ["Circle", "Triangle", "Square", "Cube"],
+    correct: "Cube",
+    explanation: "Cube is 3D, others are 2D shapes."
+  },
+  {
+    question: "Which figure completes the sequence?  ◼️ ◻️ ◼️ ◻️ ___",
+    options: ["◼️", "◻️", "△", "⭕"],
+    correct: "◼️",
+    explanation: "The pattern alternates between filled and empty squares."
+  },
+  {
+    question: "Which number is odd one out? 2, 4, 6, 9, 10",
+    options: ["2", "4", "6", "9"],
+    correct: "9",
+    explanation: "All numbers are even except 9."
+  },
+  {
+    question: "If 3 pencils cost $6, how much do 5 pencils cost?",
+    options: ["$8", "$10", "$12", "$15"],
+    correct: "$10",
+    explanation: "Cost per pencil = 6 ÷ 3 = $2 → 5 × 2 = $10."
+  },
+  {
+    question: "Which number completes the series: 7, 14, 28, 56, ___",
+    options: ["70", "84", "112", "100"],
+    correct: "112",
+    explanation: "Each number doubles the previous: 56 × 2 = 112."
+  },
+
+  // Mixed reasoning
+  {
+    question: "If today is Thursday, what day was 10 days ago?",
+    options: ["Monday", "Tuesday", "Wednesday", "Friday"],
+    correct: "Tuesday",
+    explanation: "10 days ago → subtract 10 days: Thursday - 10 days = Tuesday."
+  },
+  {
+    question: "Find the missing number: 3, 6, 12, 24, ___",
+    options: ["36", "48", "42", "60"],
+    correct: "48",
+    explanation: "Each number doubles the previous one: 24 × 2 = 48."
+  },
+  {
+    question: "Find the next in pattern: Z, X, V, T, ___",
+    options: ["S", "R", "P", "Q"],
+    correct: "R",
+    explanation: "Pattern goes backward in alphabet skipping one letter: Z, X, V, T, R."
+  },
+  {
+    question: "Which set of letters completes the series: A, C, F, J, ___",
+    options: ["O", "N", "M", "P"],
+    correct: "O",
+    explanation: "Pattern of increments: +2, +3, +4, +5 → letters: A(+2)=C, C(+3)=F, F(+4)=J, J(+5)=O."
+  },
+  {
+    question: "If all cats are animals, and some animals are black, can we conclude some cats are black?",
+    options: ["Yes", "No", "Cannot determine", "Maybe"],
+    correct: "Cannot determine",
+    explanation: "Not all animals are black, so some cats being black cannot be concluded."
+  }
+];
+
+
+  </script>
+   <script src="/js/script.js"></script>
+  </body>
+</html> 

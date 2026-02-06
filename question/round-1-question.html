@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Round 1 | English Quiz</title>
+   <link rel="stylesheet" href="/css/question.css">
+  </head>
+  <body>
+    <!-- Loader -->
+    <div id="loader">
+      <div class="loader"></div>
+    </div>
+    <header>Welcome to the Quiz, Goodluck baby!</header>
+    <div class="quiz-container">
+      <div id="timer" class="hidden">
+        Time Left: <span id="time-remaining"></span>
+      </div>
+      <button id="start-timer-btn" onclick="startTimer()">Start Timer</button>
+      <div class="question-section">
+        <h3 id="question-text">Loading...</h3>
+        <ul class="options" id="options-list">
+          <!-- Options dynamically generated -->
+        </ul>
+      </div>
+      <div id="feedback" class="hidden"></div>
+      <div id="explanation" class="hidden"></div>
+      <button id="back-btn" class="hidden" onclick="loadPreviousQuestion()">
+        Back
+      </button>
+      <button id="next-btn" class="hidden" onclick="loadNextQuestion()">
+        Next
+      </button>
+    </div>
+
+    <footer class="footer">
+      <p>
+        Designed with ❤️ by
+        <a href="https://web.facebook.com/jhian.manacpo" target="_blank">JHIAN</a>
+      </p>
+    </footer>
+
+    <script>
+      // Array of quiz questions with options, correct answers, and explanations
+      const questions = [
+{
+  question: "Abundant means",
+  options: ["Rare", "Plentiful", "Small", "Empty"],
+  correct: "Plentiful",
+  explanation: "Abundant means existing in large quantities or plentiful."
+},
+{
+  question: "Reluctant means",
+  options: ["Willing", "Excited", "Unwilling", "Brave"],
+  correct: "Unwilling",
+  explanation: "Reluctant describes someone hesitant or unwilling to do something."
+},
+{
+  question: "Fragile means",
+  options: ["Strong", "Breakable", "Heavy", "Thick"],
+  correct: "Breakable",
+  explanation: "Fragile refers to something easily broken or delicate."
+},
+{
+  question: "Ancient means",
+  options: ["Modern", "Old", "New", "Recent"],
+  correct: "Old",
+  explanation: "Ancient refers to something very old or from long ago."
+},
+{
+  question: "Visible means",
+  options: ["Hidden", "Seen", "Unknown", "Covered"],
+  correct: "Seen",
+  explanation: "Visible means able to be seen."
+},
+{
+  question: "Diligent means",
+  options: ["Lazy", "Careless", "Hardworking", "Slow"],
+  correct: "Hardworking",
+  explanation: "Diligent describes someone who works carefully and consistently."
+},
+{
+  question: "Scarce means",
+  options: ["Plenty", "Few", "Many", "Large"],
+  correct: "Few",
+  explanation: "Scarce means limited or insufficient in amount."
+},
+{
+  question: "Generous means",
+  options: ["Selfish", "Giving", "Quiet", "Angry"],
+  correct: "Giving",
+  explanation: "Generous describes someone willing to give or share."
+},
+{
+  question: "Hostile means",
+  options: ["Friendly", "Calm", "Unfriendly", "Happy"],
+  correct: "Unfriendly",
+  explanation: "Hostile means showing dislike or opposition."
+},
+{
+  question: "Unique means",
+  options: ["Common", "Ordinary", "One of a kind", "Usual"],
+  correct: "One of a kind",
+  explanation: "Unique means unlike anything else."
+},
+
+// SYNONYMS
+
+{
+  question: "Synonym of Happy",
+  options: ["Sad", "Joyful", "Angry", "Weak"],
+  correct: "Joyful",
+  explanation: "Joyful has the same meaning as happy."
+},
+{
+  question: "Synonym of Quick",
+  options: ["Fast", "Slow", "Lazy", "Late"],
+  correct: "Fast",
+  explanation: "Fast and quick mean the same."
+},
+{
+  question: "Synonym of Smart",
+  options: ["Intelligent", "Dull", "Weak", "Simple"],
+  correct: "Intelligent",
+  explanation: "Smart refers to being intelligent."
+},
+{
+  question: "Synonym of Big",
+  options: ["Large", "Tiny", "Small", "Thin"],
+  correct: "Large",
+  explanation: "Large has the same meaning as big."
+},
+{
+  question: "Synonym of Begin",
+  options: ["End", "Stop", "Start", "Close"],
+  correct: "Start",
+  explanation: "Begin and start mean the same."
+},
+{
+  question: "Synonym of Brave",
+  options: ["Afraid", "Courageous", "Weak", "Shy"],
+  correct: "Courageous",
+  explanation: "Brave means courageous."
+},
+{
+  question: "Synonym of Silent",
+  options: ["Noisy", "Quiet", "Loud", "Talkative"],
+  correct: "Quiet",
+  explanation: "Silent and quiet mean the same."
+},
+{
+  question: "Synonym of Easy",
+  options: ["Difficult", "Hard", "Simple", "Complex"],
+  correct: "Simple",
+  explanation: "Easy means simple."
+},
+{
+  question: "Synonym of Buy",
+  options: ["Sell", "Purchase", "Borrow", "Take"],
+  correct: "Purchase",
+  explanation: "Purchase is another word for buy."
+},
+{
+  question: "Synonym of Help",
+  options: ["Ignore", "Assist", "Leave", "Stop"],
+  correct: "Assist",
+  explanation: "Assist means to help."
+},
+
+// ANTONYMS
+
+{
+  question: "Antonym of Increase",
+  options: ["Grow", "Reduce", "Multiply", "Add"],
+  correct: "Reduce",
+  explanation: "Reduce means the opposite of increase."
+},
+{
+  question: "Antonym of Early",
+  options: ["Late", "Soon", "Fast", "Quick"],
+  correct: "Late",
+  explanation: "Late is the opposite of early."
+},
+{
+  question: "Antonym of Strong",
+  options: ["Powerful", "Weak", "Firm", "Hard"],
+  correct: "Weak",
+  explanation: "Weak is the opposite of strong."
+},
+{
+  question: "Antonym of Hot",
+  options: ["Warm", "Cold", "Boiling", "Heated"],
+  correct: "Cold",
+  explanation: "Cold is the opposite of hot."
+},
+{
+  question: "Antonym of Clean",
+  options: ["Dirty", "Pure", "Clear", "Fresh"],
+  correct: "Dirty",
+  explanation: "Dirty is the opposite of clean."
+},
+
+// SENTENCE COMPLETION
+
+{
+  question: "She _____ to school every day.",
+  options: ["go", "goes", "going", "gone"],
+  correct: "goes",
+  explanation: "Singular subject 'she' takes verb 'goes'."
+},
+{
+  question: "They _____ playing outside now.",
+  options: ["is", "are", "was", "be"],
+  correct: "are",
+  explanation: "'They' requires the verb 'are'."
+},
+{
+  question: "I _____ my homework last night.",
+  options: ["finish", "finished", "finishing", "finishes"],
+  correct: "finished",
+  explanation: "Past tense is needed because of 'last night'."
+},
+
+// GRAMMAR
+
+{
+  question: "Which sentence is correct?",
+  options: [
+    "He don't like apples.",
+    "He doesn't like apples.",
+    "He doesn't likes apples.",
+    "He not like apples."
+  ],
+  correct: "He doesn't like apples.",
+  explanation: "Singular subject 'he' requires 'doesn't like'."
+},
+{
+  question: "Which is a noun?",
+  options: ["Run", "Beautiful", "Happiness", "Quickly"],
+  correct: "Happiness",
+  explanation: "Happiness is a noun because it names a state or feeling."
+},
+{
+  question: "Which is a verb?",
+  options: ["Sing", "Song", "Singer", "Singing"],
+  correct: "Sing",
+  explanation: "Sing is an action word (verb)."
+},
+{
+  question: "Identify the adjective.",
+  options: ["Run", "Blue", "Quickly", "Jump"],
+  correct: "Blue",
+  explanation: "Blue describes a noun, making it an adjective."
+}
+];
+
+      
+    </script>
+    <script src="/js/script.js"></script>
+  </body>
+</html>

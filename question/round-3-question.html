@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Round 3 | Science Quiz</title>
+<link rel="stylesheet" href="/css/question.css">
+  </head>
+  <body>
+    <!-- Loader -->
+    <div id="loader">
+      <div class="loader"></div>
+    </div>
+    <header>Welcome to the Quiz, Goodluck baby!</header>
+    <div class="quiz-container">
+      <div id="timer" class="hidden">
+        Time Left: <span id="time-remaining"></span>
+      </div>
+      <button id="start-timer-btn" onclick="startTimer()">Start Timer</button>
+      <div class="question-section">
+        <h3 id="question-text">Loading...</h3>
+        <ul class="options" id="options-list">
+          <!-- Options dynamically generated -->
+        </ul>
+      </div>
+      <div id="feedback" class="hidden"></div>
+      <div id="explanation" class="hidden"></div>
+      <button id="back-btn" class="hidden" onclick="loadPreviousQuestion()">
+        Back
+      </button>
+      <button id="next-btn" class="hidden" onclick="loadNextQuestion()">
+        Next
+      </button>
+    </div>
+
+    <footer class="footer">
+      <p>
+        Designed with ❤️ by
+        <a href="https://web.facebook.com/jhian.manacpo" target="_blank">JHIAN</a>
+      </p>
+    </footer>
+
+    <script>
+      // Array of quiz questions with correct answers and explanations
+     const questions = [
+  // Biology
+  {
+    question: "Which organ pumps blood throughout the human body?",
+    options: ["Lungs", "Heart", "Kidney", "Brain"],
+    correct: "Heart",
+    explanation: "The heart is responsible for pumping blood throughout the body."
+  },
+  {
+    question: "What is the basic unit of life?",
+    options: ["Atom", "Molecule", "Cell", "Organ"],
+    correct: "Cell",
+    explanation: "The cell is the fundamental structural and functional unit of life."
+  },
+  {
+    question: "Which process do plants use to make their food?",
+    options: ["Respiration", "Photosynthesis", "Digestion", "Excretion"],
+    correct: "Photosynthesis",
+    explanation: "Photosynthesis allows plants to make food using sunlight, water, and carbon dioxide."
+  },
+  {
+    question: "Which blood cells help fight infections?",
+    options: ["Red blood cells", "White blood cells", "Platelets", "Plasma"],
+    correct: "White blood cells",
+    explanation: "White blood cells are part of the immune system and fight infections."
+  },
+  {
+    question: "Which part of the brain controls balance and coordination?",
+    options: ["Cerebrum", "Cerebellum", "Medulla", "Hypothalamus"],
+    correct: "Cerebellum",
+    explanation: "The cerebellum coordinates movement and balance."
+  },
+
+  // Physics
+  {
+    question: "What force keeps objects on the ground?",
+    options: ["Magnetism", "Gravity", "Friction", "Electricity"],
+    correct: "Gravity",
+    explanation: "Gravity is the force that attracts objects toward the Earth."
+  },
+  {
+    question: "Which form of energy comes from the Sun?",
+    options: ["Solar energy", "Nuclear energy", "Kinetic energy", "Mechanical energy"],
+    correct: "Solar energy",
+    explanation: "Solar energy is energy obtained from sunlight."
+  },
+  {
+    question: "Speed is calculated as?",
+    options: ["Distance × Time", "Distance ÷ Time", "Time ÷ Distance", "Force ÷ Mass"],
+    correct: "Distance ÷ Time",
+    explanation: "Speed = Distance divided by Time."
+  },
+  {
+    question: "Which instrument measures temperature?",
+    options: ["Barometer", "Thermometer", "Hygrometer", "Voltmeter"],
+    correct: "Thermometer",
+    explanation: "Thermometers measure temperature."
+  },
+  {
+    question: "Which of these is a non-renewable energy source?",
+    options: ["Wind", "Solar", "Coal", "Hydropower"],
+    correct: "Coal",
+    explanation: "Coal is a non-renewable fossil fuel."
+  },
+
+  // Chemistry
+  {
+    question: "Water is made up of which elements?",
+    options: ["H and O", "C and O", "N and O", "H and C"],
+    correct: "H and O",
+    explanation: "Water (H₂O) is composed of hydrogen and oxygen."
+  },
+  {
+    question: "What is the chemical symbol for Sodium?",
+    options: ["Na", "S", "So", "N"],
+    correct: "Na",
+    explanation: "The chemical symbol for Sodium is Na."
+  },
+  {
+    question: "Acids have a pH of?",
+    options: ["7", "Less than 7", "Greater than 7", "0"],
+    correct: "Less than 7",
+    explanation: "Acids have a pH value less than 7."
+  },
+  {
+    question: "Which gas do humans exhale?",
+    options: ["Oxygen", "Carbon dioxide", "Nitrogen", "Hydrogen"],
+    correct: "Carbon dioxide",
+    explanation: "Humans exhale carbon dioxide as a waste product of respiration."
+  },
+  {
+    question: "Salt is formed from?",
+    options: ["Acid + Base", "Metal + Water", "Acid + Metal", "Base + Water"],
+    correct: "Acid + Base",
+    explanation: "Salt is formed when an acid reacts with a base."
+  },
+
+  // Earth & Space Science
+  {
+    question: "What causes day and night?",
+    options: ["Earth’s revolution", "Earth’s rotation", "Sun’s rotation", "Moon’s revolution"],
+    correct: "Earth’s rotation",
+    explanation: "Day and night are caused by the Earth rotating on its axis."
+  },
+  {
+    question: "Which layer of Earth is liquid?",
+    options: ["Crust", "Mantle", "Outer core", "Inner core"],
+    correct: "Outer core",
+    explanation: "The outer core of the Earth is liquid metal."
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    options: ["Earth", "Mars", "Jupiter", "Venus"],
+    correct: "Mars",
+    explanation: "Mars is called the Red Planet due to its reddish appearance."
+  },
+  {
+    question: "What is the main gas in Earth’s atmosphere?",
+    options: ["Oxygen", "Nitrogen", "Carbon dioxide", "Hydrogen"],
+    correct: "Nitrogen",
+    explanation: "Nitrogen makes up about 78% of Earth’s atmosphere."
+  },
+  {
+    question: "Which natural resource is used to produce electricity in hydropower plants?",
+    options: ["Water", "Wind", "Sunlight", "Coal"],
+    correct: "Water",
+    explanation: "Hydropower uses the energy of flowing water to generate electricity."
+  },
+
+  // Human Body & Health
+  {
+    question: "Which organ removes waste from the blood?",
+    options: ["Liver", "Kidney", "Heart", "Lungs"],
+    correct: "Kidney",
+    explanation: "Kidneys filter waste from the blood to produce urine."
+  },
+  {
+    question: "Which vitamin is produced when the skin is exposed to sunlight?",
+    options: ["Vitamin A", "Vitamin B", "Vitamin C", "Vitamin D"],
+    correct: "Vitamin D",
+    explanation: "Vitamin D is produced in the skin with sunlight exposure."
+  },
+  {
+    question: "How many bones are in the adult human body?",
+    options: ["206", "205", "210", "201"],
+    correct: "206",
+    explanation: "The adult human body has 206 bones."
+  },
+  {
+    question: "Which system is responsible for transporting blood?",
+    options: ["Digestive system", "Circulatory system", "Respiratory system", "Nervous system"],
+    correct: "Circulatory system",
+    explanation: "The circulatory system transports blood throughout the body."
+  },
+  {
+    question: "Which part of the eye controls the amount of light entering?",
+    options: ["Cornea", "Iris", "Lens", "Retina"],
+    correct: "Iris",
+    explanation: "The iris adjusts the size of the pupil to control light intake."
+  },
+
+  // Miscellaneous Science
+  {
+    question: "Water boils at what temperature (Celsius)?",
+    options: ["90°C", "100°C", "80°C", "120°C"],
+    correct: "100°C",
+    explanation: "Water boils at 100 degrees Celsius at standard pressure."
+  },
+  {
+    question: "Sound travels fastest in which medium?",
+    options: ["Air", "Water", "Steel", "Vacuum"],
+    correct: "Steel",
+    explanation: "Sound travels fastest in solids like steel because particles are closely packed."
+  },
+  {
+    question: "What is the chemical formula for carbon dioxide?",
+    options: ["CO", "CO2", "C2O", "O2C"],
+    correct: "CO2",
+    explanation: "Carbon dioxide is composed of one carbon and two oxygen atoms: CO2."
+  },
+  {
+    question: "Lightning is caused by?",
+    options: ["Static electricity", "Gravity", "Magnetism", "Wind"],
+    correct: "Static electricity",
+    explanation: "Lightning is a discharge of static electricity in the atmosphere."
+  },
+  {
+    question: "The force that opposes motion between two surfaces is called?",
+    options: ["Gravity", "Friction", "Magnetism", "Inertia"],
+    correct: "Friction",
+    explanation: "Friction is the resistance that one surface encounters when moving over another."
+  }
+];
+
+    </script>
+     <script src="/js/script.js"></script>
+  </body>
+</html>
